@@ -4,10 +4,12 @@ import 'package:mb_hero_post/config/transition/page_transition.dart';
 import 'package:mb_hero_post/core/routes/app_route_path.dart';
 import 'package:mb_hero_post/presentation/pages/dashboard_page.dart';
 import 'package:mb_hero_post/presentation/pages/chasier_page.dart';
+import 'package:mb_hero_post/presentation/pages/edit_profile_page.dart';
 import 'package:mb_hero_post/presentation/pages/home_page.dart';
 import 'package:mb_hero_post/presentation/pages/payment_page.dart';
 import 'package:mb_hero_post/presentation/pages/payment_success_page.dart';
 import 'package:mb_hero_post/presentation/pages/splash_page.dart';
+import 'package:mb_hero_post/presentation/pages/struk_page.dart';
 import 'package:mb_hero_post/presentation/pages/toko_page.dart';
 import 'package:mb_hero_post/presentation/pages/troli_page.dart';
 
@@ -120,6 +122,27 @@ class AppRouteConf {
                 pageBuilder: (context, state) {
                   return const NoTransitionPage(child: TokoPage());
                 },
+                routes: [
+                  GoRoute(
+                    path: AppRoute.struk.path,
+                    name: AppRoute.struk.path,
+                    pageBuilder: (context, state) {
+                      return const NoTransitionPage(child: StrukPage());
+                    },
+                  ),
+                  GoRoute(
+                    path: AppRoute.editprofile.path,
+                    name: AppRoute.editprofile.path,
+                    pageBuilder: (context, state) {
+                      var arg = state.extra! as Map<String, dynamic>;
+                      return NoTransitionPage(
+                        child: EditProfilePage(
+                          profile: arg["profile"],
+                        ),
+                      );
+                    },
+                  ),
+                ],
               ),
             ],
           )

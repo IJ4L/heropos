@@ -19,12 +19,11 @@ class PaymentSuccessPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColor.green,
-      body: WillPopScope(
-        onWillPop: () async {
+      body: PopScope(
+        onPopInvoked: (didPop) {
           context.read<TroliCubit>().reset();
           context.read<PembayaranCubit>().deleteAll();
           context.go(AppRoute.chasier.path);
-          return true;
         },
         child: SafeArea(
           child: Column(

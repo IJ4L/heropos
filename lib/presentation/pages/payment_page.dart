@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mb_hero_post/config/injector/injector.dart';
 import 'package:mb_hero_post/core/extension/string_formatter.dart';
 import 'package:mb_hero_post/core/routes/app_route_path.dart';
 import 'package:mb_hero_post/core/themes/app_color.dart';
 import 'package:mb_hero_post/core/themes/app_font.dart';
-import 'package:mb_hero_post/presentation/cubit/pembayaran_cubit/pembayaran_cubit.dart';
-import 'package:mb_hero_post/presentation/cubit/troli_cubit/troli_cubit.dart';
+import 'package:mb_hero_post/data/models/transaction_detail_model.dart';
+import 'package:mb_hero_post/data/models/transaction_model.dart';
+import 'package:mb_hero_post/presentation/utils/random.dart';
 
 class PaymentPage extends StatelessWidget {
   const PaymentPage({Key? key, required this.itemChoose}) : super(key: key);
@@ -17,6 +19,7 @@ class PaymentPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final pembayaranCubit = context.read<PembayaranCubit>();
+    final transactionCubit = context.read<TransactionCubit>();
 
     return Scaffold(
       appBar: AppBar(
@@ -27,11 +30,10 @@ class PaymentPage extends StatelessWidget {
         centerTitle: true,
         backgroundColor: AppColor.white,
       ),
-      body: WillPopScope(
-        onWillPop: () async {
+      body: PopScope(
+        onPopInvoked: (didPop) {
           context.read<PembayaranCubit>().deleteAll();
           context.pushNamed(AppRoute.troli.path);
-          return true;
         },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -231,9 +233,15 @@ class PaymentPage extends StatelessWidget {
                             backgroundColor: AppColor.green,
                             textColor: AppColor.white,
                             onTap: () {
-                              double tunai =
-                                  double.tryParse(pembayaranCubit.state)!;
+                              double tunai = double.tryParse(
+                                pembayaranCubit.state,
+                              )!;
                               if (tunai >= itemChoose.totalPrice) {
+                                insertTransactionToDatabase(
+                                  itemChoose,
+                                  transactionCubit,
+                                  pembayaranCubit,
+                                );
                                 context.pushNamed(
                                   AppRoute.paymentsuccess.path,
                                   extra: {
@@ -253,6 +261,37 @@ class PaymentPage extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+void insertTransactionToDatabase(
+  TroliState itemChoose,
+  TransactionCubit transactionCubit,
+  PembayaranCubit pembayaranCubit,
+) {
+  int id = generateRandomId();
+
+  Transactions transaction = Transactions(
+    id: id,
+    transactionDate: DateTime.now(),
+    totalAmount: itemChoose.totalPrice,
+    tunai: int.tryParse(pembayaranCubit.state)!,
+  );
+
+  transactionCubit.insertTransactions(
+    transaction: transaction,
+  );
+
+  for (var i = 0; i < itemChoose.products.length; i++) {
+    TransactionDetail transactionDetail = TransactionDetail(
+      transactionId: id,
+      itemName: itemChoose.products[i].nameOfProduct,
+      quantity: itemChoose.products[i].quantity,
+      unitPrice: double.tryParse(itemChoose.products[i].priceOfProduct),
+    );
+    transactionCubit.insertTransactionsDetails(
+      transactionDetail: transactionDetail,
     );
   }
 }

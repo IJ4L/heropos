@@ -5,6 +5,8 @@ enum AppRoute {
   troli(path: "troli"),
   payment(path: "payment"),
   paymentsuccess(path: "paymentsuccess"),
+  struk(path: "struk"),
+  editprofile(path: "editprofile"),
   toko(path: "/toko");
 
   final String path;

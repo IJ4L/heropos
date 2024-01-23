@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mb_hero_post/config/injector/injector.dart';
 import 'package:mb_hero_post/core/themes/app_color.dart';
-import 'package:mb_hero_post/presentation/cubit/troli_cubit/troli_cubit.dart';
 import 'package:svg_flutter/svg_flutter.dart';
 
 class Homepage extends StatelessWidget {
@@ -54,7 +54,10 @@ class Homepage extends StatelessWidget {
           const SizedBox(),
           NavigationDestinantionCostume(
             seleceted: seleceted,
-            onPressed: () => _goBranch(2),
+            onPressed: () => {
+              context.read<TransactionCubit>().getTransactionDetails(),
+              _goBranch(2),
+            },
             icon: "ic_card",
             index: 2,
           ),

@@ -11,8 +11,14 @@ class AppFont {
   static TextStyle regular = GoogleFonts.spaceGrotesk(
     fontWeight: FontWeight.w400,
   );
+   static TextStyle popRegular = GoogleFonts.poppins(
+    fontWeight: FontWeight.w400,
+  );
   static TextStyle semiBold = GoogleFonts.spaceGrotesk(
     fontWeight: FontWeight.w600,
+  );
+  static TextStyle popSemiBold = GoogleFonts.poppins(
+    fontWeight: FontWeight.w500,
   );
   static TextStyle bold = GoogleFonts.spaceGrotesk(
     fontWeight: FontWeight.bold,

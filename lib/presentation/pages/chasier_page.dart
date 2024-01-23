@@ -56,7 +56,7 @@ class ChasierPage extends StatelessWidget {
                     ),
                     const Spacer(),
                     costumeIconButton(
-                      iconData: Icons.search,
+                      iconData: Icons.search_outlined,
                       onPressed: () {},
                     ),
                     costumeIconButton(
@@ -68,7 +68,8 @@ class ChasierPage extends StatelessWidget {
                     BlocBuilder<ListCardCubit, bool>(
                       builder: (context, state) {
                         return costumeIconButton(
-                          iconData: state ?Icons.list : Icons.grid_view,
+                          iconData:
+                              state ? Icons.list_alt_outlined : Icons.grid_view,
                           onPressed: () {
                             context.read<ListCardCubit>().toggle();
                           },
