@@ -26,6 +26,7 @@ class _TokoPageState extends State<TokoPage> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -130,16 +131,21 @@ class _TokoPageState extends State<TokoPage> {
             child: Column(
               children: [
                 IconButtonCostume(
+                  title: "Tambah Produk",
+                  icon: Icons.add_business_outlined,
+                  onPressed: () {},
+                ),
+                IconButtonCostume(
+                  title: "Manajemen Stok",
+                  icon: Icons.manage_history,
+                  onPressed: () {},
+                ),
+                IconButtonCostume(
                   title: "Struk Penjulan",
                   icon: Icons.developer_board,
                   onPressed: () {
                     context.pushNamed(AppRoute.struk.name);
                   },
-                ),
-                IconButtonCostume(
-                  title: "Stok Manajemen",
-                  icon: Icons.manage_history,
-                  onPressed: () {},
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 8.w),
@@ -150,7 +156,9 @@ class _TokoPageState extends State<TokoPage> {
                 IconButtonCostume(
                   title: "Testing Printer",
                   icon: Icons.print_outlined,
-                  onPressed: () {},
+                  onPressed: () async {
+                    // printTestTicket();
+                  },
                 ),
                 IconButtonCostume(
                   title: "Hapus Cache",

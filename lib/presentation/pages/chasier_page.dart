@@ -55,10 +55,10 @@ class ChasierPage extends StatelessWidget {
                       style: AppFont.semiBold.s14,
                     ),
                     const Spacer(),
-                    costumeIconButton(
-                      iconData: Icons.search_outlined,
-                      onPressed: () {},
-                    ),
+                    // costumeIconButton(
+                    //   iconData: Icons.search_outlined,
+                    //   onPressed: () {},
+                    // ),
                     costumeIconButton(
                       iconData: Icons.refresh_outlined,
                       onPressed: () {

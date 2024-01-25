@@ -58,8 +58,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 Container(
                   height: 120.h,
                   width: 120.h,
+                  padding: EdgeInsets.all(2.h),
                   decoration: BoxDecoration(
                     color: AppColor.green,
+                    border: Border.all(color: AppColor.green, width: 1),
                     borderRadius: BorderRadius.circular(60.h),
                   ),
                   child: BlocBuilder<CamereCubit, String>(
@@ -122,31 +124,31 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 ),
               ],
             ),
-            SizedBox(height: 20.h),
+            SizedBox(height: 30.h),
             TextformfieldCostume(
               title: 'Nama Toko',
               initialValue: widget.profile.name,
               controller: nameController,
             ),
-            SizedBox(height: 8.h),
+            SizedBox(height: 10.h),
             TextformfieldCostume(
               title: 'Alamat',
               initialValue: widget.profile.alamat,
               controller: addressController,
             ),
-            SizedBox(height: 8.h),
+            SizedBox(height: 10.h),
             TextformfieldCostume(
               title: 'Alamat Email',
               initialValue: widget.profile.email,
               controller: emailController,
             ),
-            SizedBox(height: 8.h),
+            SizedBox(height: 10.h),
             TextformfieldCostume(
               title: 'Nomer Telpon',
               initialValue: widget.profile.phone,
               controller: phoneController,
             ),
-            SizedBox(height: 8.h),
+            SizedBox(height: 10.h),
             SizedBox(
               width: double.infinity,
               height: 40.h,

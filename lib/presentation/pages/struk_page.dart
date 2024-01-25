@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -6,6 +8,7 @@ import 'package:mb_hero_post/core/themes/app_color.dart';
 import 'package:mb_hero_post/core/themes/app_font.dart';
 import 'package:mb_hero_post/data/models/transaction_detail_model.dart';
 import 'package:mb_hero_post/data/models/transaction_model.dart';
+import 'package:mb_hero_post/presentation/cubit/profile_cubit/profile_cubit.dart';
 import 'package:mb_hero_post/presentation/cubit/transaction_cubit/transaction_cubit.dart';
 import 'package:mb_hero_post/presentation/utils/date_formatter.dart';
 
@@ -74,7 +77,7 @@ class _StrukPageState extends State<StrukPage> {
     double kembalian =
         produk.transaction.tunai!.toDouble() - produk.transaction.totalAmount!;
     return Container(
-      height: MediaQuery.of(context).size.height * 0.64.h,
+      height: MediaQuery.of(context).size.height * 0.63.h,
       width: MediaQuery.of(context).size.width * 0.74.w,
       padding: EdgeInsets.symmetric(
         horizontal: 25.w,
@@ -86,7 +89,6 @@ class _StrukPageState extends State<StrukPage> {
       ),
       child: Column(
         children: [
-          buildStoreLogo(),
           buildStoreDetails(),
           SizedBox(height: 20.h),
           buildTransactionInfo(produk.transaction),
@@ -105,42 +107,61 @@ class _StrukPageState extends State<StrukPage> {
     );
   }
 
-  Widget buildStoreLogo() {
-    return Container(
-      height: 70.r,
-      width: 70.r,
-      margin: EdgeInsets.symmetric(vertical: 20.h),
-      decoration: const BoxDecoration(
-        color: AppColor.green,
-        shape: BoxShape.circle,
-      ),
-    );
-  }
-
   Widget buildStoreDetails() {
-    return Column(
-      children: [
-        Text(
-          "POST CAFE BINTARO",
-          style: AppFont.semiBold.s20.copyWith(
-            color: AppColor.black,
-          ),
-        ),
-        Text(
-          "Alamat lengkap toko",
-          style: AppFont.regular.s12.copyWith(
-            color: AppColor.black.withOpacity(0.5),
-          ),
-        ),
-        const SizedBox(height: 5.0),
-        Text(
-          "0812345326789",
-          style: AppFont.regular.s12.copyWith(
-            color: AppColor.black.withOpacity(0.5),
-          ),
-        ),
-        SizedBox(height: 5.h),
-      ],
+    return BlocBuilder<ProfileCubit, ProfileState>(
+      builder: (context, state) {
+        if (state is ProfileLoaded) {
+          var data = state.profile;
+          return Column(
+            children: [
+              Container(
+                height: 70.r,
+                width: 70.r,
+                margin: EdgeInsets.symmetric(vertical: 20.h),
+                decoration: const BoxDecoration(
+                  color: AppColor.green,
+                  shape: BoxShape.circle,
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(40.h),
+                  child: data.img.length == 26
+                      ? Image.asset(
+                          "assests/images/img_toko.png",
+                          width: 120.0,
+                          height: 120.0,
+                          fit: BoxFit.fill,
+                        )
+                      : Image.file(
+                          File(data.img),
+                          fit: BoxFit.fill,
+                        ),
+                ),
+              ),
+              Text(
+                data.name,
+                style: AppFont.semiBold.s20.copyWith(
+                  color: AppColor.black,
+                ),
+              ),
+              Text(
+                data.alamat,
+                style: AppFont.regular.s12.copyWith(
+                  color: AppColor.black.withOpacity(0.5),
+                ),
+              ),
+              const SizedBox(height: 5.0),
+              Text(
+                data.phone,
+                style: AppFont.regular.s12.copyWith(
+                  color: AppColor.black.withOpacity(0.5),
+                ),
+              ),
+              SizedBox(height: 5.h),
+            ],
+          );
+        }
+        return const SizedBox();
+      },
     );
   }
 

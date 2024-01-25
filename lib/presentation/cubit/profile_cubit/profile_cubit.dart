@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 import 'package:mb_hero_post/data/models/profile_model.dart';
 import 'package:mb_hero_post/domain/usecase/get_profile.dart';
 import 'package:mb_hero_post/domain/usecase/update_profile.dart';
@@ -19,8 +18,7 @@ class ProfileCubit extends Cubit<ProfileState> {
   void getProfileData() async {
     emit(ProfileLoading());
     final profile = await getProfile.execute();
-    debugPrint(profile!.img.toString());
-    emit(ProfileLoaded(profile));
+    emit(ProfileLoaded(profile!));
   }
 
   void updateProfileData(Profile profile) async {
