@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -8,25 +7,14 @@ import 'package:go_router/go_router.dart';
 import 'package:mb_hero_post/core/routes/app_route_path.dart';
 import 'package:mb_hero_post/core/themes/app_color.dart';
 import 'package:mb_hero_post/core/themes/app_font.dart';
+import 'package:mb_hero_post/presentation/cubit/camera_cubit/camere_cubit.dart';
 import 'package:mb_hero_post/presentation/cubit/profile_cubit/profile_cubit.dart';
 
-class TokoPage extends StatefulWidget {
+class TokoPage extends StatelessWidget {
   const TokoPage({Key? key}) : super(key: key);
 
   @override
-  State<TokoPage> createState() => _TokoPageState();
-}
-
-class _TokoPageState extends State<TokoPage> {
-  @override
-  void initState() {
-    super.initState();
-    context.read<ProfileCubit>().getProfileData();
-  }
-
-  @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -51,7 +39,6 @@ class _TokoPageState extends State<TokoPage> {
               builder: (context, state) {
                 if (state is ProfileLoaded) {
                   var data = state.profile;
-                  log(data.img);
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -92,6 +79,7 @@ class _TokoPageState extends State<TokoPage> {
                           SizedBox(height: 6.h),
                           ElevatedButton(
                             onPressed: () {
+                              context.read<CamereCubit>().reset();
                               context.pushNamed(
                                 AppRoute.editprofile.name,
                                 extra: {"profile": data},
@@ -133,18 +121,22 @@ class _TokoPageState extends State<TokoPage> {
                 IconButtonCostume(
                   title: "Tambah Produk",
                   icon: Icons.add_business_outlined,
-                  onPressed: () {},
+                  onPressed: () {
+                    context.pushNamed(AppRoute.produk.name);
+                  },
                 ),
                 IconButtonCostume(
-                  title: "Manajemen Stok",
-                  icon: Icons.manage_history,
-                  onPressed: () {},
-                ),
-                IconButtonCostume(
-                  title: "Struk Penjulan",
+                  title: "Struk Pembelian",
                   icon: Icons.developer_board,
                   onPressed: () {
                     context.pushNamed(AppRoute.struk.name);
+                  },
+                ),
+                IconButtonCostume(
+                  title: "Pengaturan Printer",
+                  icon: Icons.print_outlined,
+                  onPressed: () {
+                    context.pushNamed(AppRoute.printingtest.name);
                   },
                 ),
                 Padding(
@@ -152,13 +144,6 @@ class _TokoPageState extends State<TokoPage> {
                   child: Divider(
                     color: AppColor.grey.withOpacity(0.5),
                   ),
-                ),
-                IconButtonCostume(
-                  title: "Testing Printer",
-                  icon: Icons.print_outlined,
-                  onPressed: () async {
-                    // printTestTicket();
-                  },
                 ),
                 IconButtonCostume(
                   title: "Hapus Cache",

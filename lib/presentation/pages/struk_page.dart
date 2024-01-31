@@ -25,7 +25,7 @@ class _StrukPageState extends State<StrukPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Struk",
+          "Struk Pembelian",
           style: AppFont.semiBold.s16,
         ),
         centerTitle: true,
@@ -126,7 +126,7 @@ class _StrukPageState extends State<StrukPage> {
                   borderRadius: BorderRadius.circular(40.h),
                   child: data.img.length == 26
                       ? Image.asset(
-                          "assests/images/img_toko.png",
+                          "assets/images/img_toko.png",
                           width: 120.0,
                           height: 120.0,
                           fit: BoxFit.fill,

@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mb_hero_post/config/transition/page_transition.dart';
 import 'package:mb_hero_post/core/routes/app_route_path.dart';
+import 'package:mb_hero_post/presentation/pages/add_produk_page.dart';
+import 'package:mb_hero_post/presentation/pages/produk_page.dart';
 import 'package:mb_hero_post/presentation/pages/dashboard_page.dart';
 import 'package:mb_hero_post/presentation/pages/chasier_page.dart';
 import 'package:mb_hero_post/presentation/pages/edit_profile_page.dart';
 import 'package:mb_hero_post/presentation/pages/home_page.dart';
 import 'package:mb_hero_post/presentation/pages/payment_page.dart';
 import 'package:mb_hero_post/presentation/pages/payment_success_page.dart';
+import 'package:mb_hero_post/presentation/pages/printing_test_page.dart';
 import 'package:mb_hero_post/presentation/pages/splash_page.dart';
 import 'package:mb_hero_post/presentation/pages/struk_page.dart';
 import 'package:mb_hero_post/presentation/pages/toko_page.dart';
@@ -105,6 +108,8 @@ class AppRouteConf {
                         state: state,
                         page: PaymentSuccessPage(
                           change: arg["change"],
+                          itemChoose: arg["produk"],
+                          cash: arg["cash"],
                         ),
                       );
                     },
@@ -141,6 +146,29 @@ class AppRouteConf {
                         ),
                       );
                     },
+                  ),
+                  GoRoute(
+                    path: AppRoute.printingtest.path,
+                    name: AppRoute.printingtest.path,
+                    pageBuilder: (context, state) {
+                      return const NoTransitionPage(child: PrintingTestPage());
+                    },
+                  ),
+                  GoRoute(
+                    path: AppRoute.produk.path,
+                    name: AppRoute.produk.path,
+                    pageBuilder: (context, state) {
+                      return const NoTransitionPage(child: ProdukPage());
+                    },
+                    routes: [
+                      GoRoute(
+                        path: AppRoute.addproduk.path,
+                        name: AppRoute.addproduk.path,
+                        pageBuilder: (context, state) {
+                          return const NoTransitionPage(child: AddProdukPage());
+                        },
+                      ),
+                    ],
                   ),
                 ],
               ),

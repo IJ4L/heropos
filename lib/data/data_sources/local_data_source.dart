@@ -2,12 +2,15 @@ import 'dart:io';
 
 import 'package:image_picker/image_picker.dart';
 import 'package:mb_hero_post/config/schema/string_dbms.dart';
+import 'package:mb_hero_post/data/models/product_insert_model.dart';
 import 'package:mb_hero_post/data/models/profile_model.dart';
 import 'package:mb_hero_post/data/models/transaction_detail_model.dart';
 import 'package:mb_hero_post/data/models/transaction_model.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class LocalDataSource {
   Future<int> insertTransaction(Transactions transaction);
@@ -20,6 +23,14 @@ abstract class LocalDataSource {
   Future<int> updateProfile({required Profile profile});
   Future<Profile?> getProfile();
 
+  Future<int> insertProduk(Produk produk);
+  Future<List<Produk>> getProduk();
+  Future<int> updateProduk(Produk produk);
+  Future<int> deleteProduk(int id);
+
+  Future<void> saveBluetoothInfo(BluetoothInfo bluetoothInfo);
+  Future<BluetoothInfo> getBluetoothInfo();
+
   Future<String> getImageFromGallery();
 
   Future<Database?> get database;
@@ -30,10 +41,13 @@ class LocalDataSourceImpl implements LocalDataSource {
   factory LocalDataSourceImpl() => _instance;
 
   static Database? _database;
-
   File? image;
-
   LocalDataSourceImpl.internal();
+
+  static SharedPreferences? sharedPreferences;
+  init() async {
+    sharedPreferences = await SharedPreferences.getInstance();
+  }
 
   @override
   Future<Database?> get database async {
@@ -48,12 +62,13 @@ class LocalDataSourceImpl implements LocalDataSource {
 
     return await openDatabase(
       path,
-      version: 6,
+      version: 9,
       onCreate: (Database db, int version) async {
         await db.execute(transactions);
         await db.execute(transactionDetails);
         await db.execute(profile);
         await db.execute(pdefaultProfile);
+        await db.execute(products);
       },
     );
   }
@@ -153,18 +168,73 @@ class LocalDataSourceImpl implements LocalDataSource {
   }
 
   @override
-   Future<String> getImageFromGallery() async {
-    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+  Future<String> getImageFromGallery() async {
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
     String imagePath;
 
     if (pickedFile != null) {
       Directory documentsDirectory = await getApplicationDocumentsDirectory();
-      imagePath = '${documentsDirectory.path}/${DateTime.now().millisecondsSinceEpoch}.png';
+      imagePath =
+          '${documentsDirectory.path}/${DateTime.now().millisecondsSinceEpoch}.png';
 
       await File(pickedFile.path).copy(imagePath);
       image = File(imagePath);
     }
 
     return image!.path;
+  }
+
+  @override
+  Future<int> insertProduk(Produk produk) async {
+    Database? db = await database;
+    return await db!.insert(
+      'products',
+      produk.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  @override
+  Future<int> updateProduk(Produk produk) async {
+    Database? db = await database;
+    return await db!.update(
+      'products',
+      produk.toMap(),
+      where: 'ID = ?',
+      whereArgs: [produk.id],
+    );
+  }
+
+  @override
+  Future<int> deleteProduk(int id) async {
+    Database? db = await database;
+    return await db!.delete('products', where: 'ID = ?', whereArgs: [id]);
+  }
+
+  @override
+  Future<List<Produk>> getProduk() async {
+    Database? db = await database;
+    List<Map<String, dynamic>> maps = await db!.query('products');
+    return List.generate(
+      maps.length,
+      (index) {
+        return Produk.fromMap(maps[index]);
+      },
+    );
+  }
+
+  @override
+  Future<BluetoothInfo> getBluetoothInfo() async {
+    final tag = sharedPreferences!.getString('tag');
+    final address = sharedPreferences!.getString('address');
+    return BluetoothInfo(name: tag ?? "", macAdress: address ?? "");
+  }
+
+  @override
+  Future<void> saveBluetoothInfo(BluetoothInfo bluetoothInfo) async {
+    await sharedPreferences!.setString('tag', bluetoothInfo.name);
+    await sharedPreferences!.setString('address', bluetoothInfo.macAdress);
+    return;
   }
 }

@@ -4,26 +4,24 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mb_hero_post/core/routes/app_route_path.dart';
 import 'package:mb_hero_post/core/themes/app_color.dart';
 import 'package:mb_hero_post/core/themes/app_font.dart';
-import 'package:mb_hero_post/data/models/product_model.dart';
 import 'package:mb_hero_post/presentation/cubit/list_card_cubit/list_card_cubit.dart';
+import 'package:mb_hero_post/presentation/cubit/produk_cubit/produk_cubit.dart';
 import 'package:mb_hero_post/presentation/cubit/troli_cubit/troli_cubit.dart';
 import 'package:mb_hero_post/presentation/widgets/costume_icon_button.dart';
 import 'package:mb_hero_post/presentation/widgets/floating_price.dart';
 import 'package:mb_hero_post/presentation/widgets/grid_widget.dart';
 import 'package:mb_hero_post/presentation/widgets/list_widget.dart';
 
-class ChasierPage extends StatelessWidget {
+class ChasierPage extends StatefulWidget {
   const ChasierPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final List<ProductModel> products = [
-      ProductModel(nameOfProduct: "Beef", priceOfProduct: "50000", quantity: 0),
-      ProductModel(
-          nameOfProduct: "Mayonaise", priceOfProduct: "1000", quantity: 0),
-      ProductModel(nameOfProduct: "Tick", priceOfProduct: "10000", quantity: 0),
-    ];
+  State<ChasierPage> createState() => _ChasierPageState();
+}
 
+class _ChasierPageState extends State<ChasierPage> {
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -79,12 +77,21 @@ class ChasierPage extends StatelessWidget {
                   ],
                 ),
               ),
-              BlocBuilder<ListCardCubit, bool>(
-                builder: (context, state) {
-                  return state
-                      ? ListCardWidget(products: products)
-                      : GridCard(products: products);
-                },
+              Expanded(
+                child: BlocBuilder<ProdukCubit, ProdukState>(
+                  builder: (context, state) {
+                    if (state is ProdukLoaded) {
+                      return BlocBuilder<ListCardCubit, bool>(
+                        builder: (context, tampilan) {
+                          return tampilan
+                              ? ListCardWidget(products: state.produks)
+                              : GridCard(products: state.produks);
+                        },
+                      );
+                    }
+                    return const SizedBox();
+                  },
+                ),
               ),
             ],
           ),

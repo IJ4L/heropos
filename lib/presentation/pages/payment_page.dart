@@ -245,7 +245,9 @@ class PaymentPage extends StatelessWidget {
                                 context.pushNamed(
                                   AppRoute.paymentsuccess.path,
                                   extra: {
-                                    "change": tunai - itemChoose.totalPrice
+                                    "change": tunai - itemChoose.totalPrice,
+                                    "produk": itemChoose,
+                                    "cash": tunai.toInt(),
                                   },
                                 );
                               }

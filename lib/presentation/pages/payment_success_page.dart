@@ -6,14 +6,25 @@ import 'package:mb_hero_post/core/extension/string_formatter.dart';
 import 'package:mb_hero_post/core/routes/app_route_path.dart';
 import 'package:mb_hero_post/core/themes/app_color.dart';
 import 'package:mb_hero_post/core/themes/app_font.dart';
+import 'package:mb_hero_post/presentation/cubit/bluetooth_info_cubit/bluetooth_info_cubit.dart';
+import 'package:mb_hero_post/presentation/cubit/bluetooth_status_cubit/bluetooth_status_cubit.dart';
 import 'package:mb_hero_post/presentation/cubit/pembayaran_cubit/pembayaran_cubit.dart';
+import 'package:mb_hero_post/presentation/cubit/printer_cubit/printer_cubit.dart';
+import 'package:mb_hero_post/presentation/cubit/profile_cubit/profile_cubit.dart';
 import 'package:mb_hero_post/presentation/cubit/troli_cubit/troli_cubit.dart';
 import 'package:svg_flutter/svg_flutter.dart';
 
 class PaymentSuccessPage extends StatelessWidget {
-  const PaymentSuccessPage({super.key, required this.change});
+  const PaymentSuccessPage({
+    super.key,
+    required this.change,
+    required this.itemChoose,
+    required this.cash,
+  });
 
   final double change;
+  final TroliState itemChoose;
+  final int cash;
 
   @override
   Widget build(BuildContext context) {
@@ -76,14 +87,14 @@ class PaymentSuccessPage extends StatelessWidget {
                       child: Column(
                         children: [
                           Text(
-                            "Pembayaran: TUNAI",
+                            "pembayaran: TUNAI",
                             style: AppFont.bold.s16.copyWith(
                               color: AppColor.white,
                             ),
                           ),
                           const Divider(),
                           Text(
-                            "Kembalian: ${change.toInt().toString().formatCurrency()}",
+                            "kembalian: ${change.toInt().toString().formatCurrency()}",
                             style: AppFont.bold.s16.copyWith(
                               color: AppColor.white,
                             ),
@@ -94,7 +105,7 @@ class PaymentSuccessPage extends StatelessWidget {
                   ],
                 ),
               ),
-              const Spacer(),
+              SizedBox(height: 10.h),
               Container(
                 margin: EdgeInsets.symmetric(horizontal: 20.w),
                 decoration: BoxDecoration(
@@ -104,19 +115,86 @@ class PaymentSuccessPage extends StatelessWidget {
                     width: 1,
                   ),
                 ),
-                child: TextButton(
-                  onPressed: () {},
-                  style: TextButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(6.r),
-                    ),
-                  ),
-                  child: Center(
-                    child: Text(
-                      "Print Struk",
-                      style: AppFont.bold.s14.copyWith(color: AppColor.white),
-                    ),
-                  ),
+                child: BlocBuilder<BluetoothStatusCubit, BluetoothStatusState>(
+                  builder: (context, state) {
+                    var isBluetoothOn = state is BluetoothStatusOn;
+                    return BlocBuilder<ProfileCubit, ProfileState>(
+                      builder: (context, state) {
+                        if (state is ProfileLoaded) {
+                          return BlocConsumer<PrinterCubit, PrinterState>(
+                            listener: (context, hasil) {
+                              if (hasil is PrinterError) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    backgroundColor: AppColor.red,
+                                    content: Text(
+                                      hasil.message,
+                                      style: AppFont.popSemiBold.s14,
+                                    ),
+                                  ),
+                                );
+                              }
+                              if (hasil is PrinterSuccess) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    backgroundColor: AppColor.blue,
+                                    content: Text(
+                                      "Berhasil mencetak struk",
+                                      style: AppFont.popSemiBold.s14,
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
+                            builder: (context, hasil) {
+                              return TextButton(
+                                onPressed: () {
+                                  isBluetoothOn
+                                      ? context
+                                          .read<PrinterCubit>()
+                                          .printStruks(
+                                            produk: itemChoose,
+                                            profile: state.profile,
+                                            cash: cash,
+                                            address: context
+                                                .read<BluetoothInfoCubit>()
+                                                .state
+                                                .macAdress,
+                                          )
+                                      : null;
+                                },
+                                style: TextButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(6.r),
+                                  ),
+                                ),
+                                child: Center(
+                                  child: state is PrinterLoading
+                                      ? Container(
+                                          width: 30.r,
+                                          height: 30.r,
+                                          padding: EdgeInsets.all(10.r),
+                                          child:
+                                              const CircularProgressIndicator(
+                                            color: AppColor.white,
+                                            strokeWidth: 4.5,
+                                          ),
+                                        )
+                                      : Text(
+                                          "Test Print",
+                                          style: AppFont.semiBold.s14.copyWith(
+                                            color: AppColor.white,
+                                          ),
+                                        ),
+                                ),
+                              );
+                            },
+                          );
+                        }
+                        return Container();
+                      },
+                    );
+                  },
                 ),
               ),
               Container(

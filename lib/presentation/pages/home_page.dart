@@ -1,34 +1,48 @@
-// ignore_for_file: deprecated_member_use
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mb_hero_post/config/injector/injector.dart';
 import 'package:mb_hero_post/core/themes/app_color.dart';
+import 'package:mb_hero_post/presentation/cubit/bluetooth_info_cubit/bluetooth_info_cubit.dart';
+import 'package:mb_hero_post/presentation/cubit/produk_cubit/produk_cubit.dart';
+import 'package:mb_hero_post/presentation/cubit/profile_cubit/profile_cubit.dart';
 import 'package:svg_flutter/svg_flutter.dart';
 
-class Homepage extends StatelessWidget {
+class Homepage extends StatefulWidget {
   const Homepage({super.key, required this.navigationShell});
   final StatefulNavigationShell navigationShell;
 
+  @override
+  State<Homepage> createState() => _HomepageState();
+}
+
+class _HomepageState extends State<Homepage> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<ProfileCubit>().getProfileData();
+    context.read<ProdukCubit>().getProduks();
+    context.read<BluetoothInfoCubit>().getInfo();
+  }
+
   void _goBranch(int index) {
-    navigationShell.goBranch(
+    widget.navigationShell.goBranch(
       index,
-      initialLocation: index == navigationShell.currentIndex,
+      initialLocation: index == widget.navigationShell.currentIndex,
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final int seleceted = navigationShell.currentIndex;
+    final int seleceted = widget.navigationShell.currentIndex;
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: navigationShell,
+      body: widget.navigationShell,
       bottomNavigationBar: NavigationBar(
         elevation: 12,
         height: 62.h,
-        selectedIndex: navigationShell.currentIndex,
+        selectedIndex: widget.navigationShell.currentIndex,
         backgroundColor: AppColor.white,
         indicatorColor: AppColor.transparent,
         surfaceTintColor: AppColor.transparent,
@@ -118,6 +132,7 @@ class BottomIconBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return SvgPicture.asset(
       icon,
+      // ignore: deprecated_member_use
       color: color,
       height: 24.r,
       width: 24.r,

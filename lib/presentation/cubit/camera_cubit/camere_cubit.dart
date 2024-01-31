@@ -10,4 +10,8 @@ class CamereCubit extends Cubit<String> {
     String image = await getImageFromGalery.execute();
     emit(image);
   }
+
+  void reset() {
+    emit("");
+  }
 }
