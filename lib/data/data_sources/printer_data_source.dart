@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:esc_pos_utils_plus/esc_pos_utils_plus.dart';
-import 'package:flutter_blue/flutter_blue.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:mb_hero_post/config/injector/injector.dart';
 import 'package:mb_hero_post/core/extension/string_formatter.dart';
 import 'package:mb_hero_post/data/models/profile_model.dart';
@@ -21,8 +21,6 @@ abstract class PrinterDataSource {
 }
 
 class PrinterDataSourceImpl implements PrinterDataSource {
-  FlutterBlue flutterBlue = FlutterBlue.instance;
-
   @override
   Future<bool> printStruk({
     required TroliState produk,
@@ -217,11 +215,16 @@ class PrinterDataSourceImpl implements PrinterDataSource {
 
   @override
   Future<PermissionStatus> bluetoothCheck() async {
-    await Permission.bluetooth.request();
-    bool isBluetoothOn = await flutterBlue.isOn;
+    var status = await Permission.bluetooth.request();
 
-    if (isBluetoothOn) {
-      return Permission.bluetooth.status;
+    if (status.isGranted) {
+      bool isBluetoothOn = await FlutterBluePlus.isOn;
+
+      if (isBluetoothOn) {
+        return PermissionStatus.granted;
+      } else {
+        return PermissionStatus.denied;
+      }
     } else {
       return PermissionStatus.denied;
     }

@@ -75,11 +75,10 @@ class AppRouteConf {
                     path: AppRoute.troli.path,
                     name: AppRoute.troli.name,
                     pageBuilder: (BuildContext context, GoRouterState state) {
-                      var arg = state.extra! as Map<String, dynamic>;
                       return CostumeTransitionPageBuilder.fadeTransition(
                         context: context,
                         state: state,
-                        page: TroliPage(itemChoose: arg['products']),
+                        page: const TroliPage(),
                       );
                     },
                   ),
@@ -165,7 +164,13 @@ class AppRouteConf {
                         path: AppRoute.addproduk.path,
                         name: AppRoute.addproduk.path,
                         pageBuilder: (context, state) {
-                          return const NoTransitionPage(child: AddProdukPage());
+                          var arg = state.extra! as Map<String, dynamic>;
+                          return NoTransitionPage(
+                            child: AddProdukPage(
+                              isEdit: arg["isEdit"],
+                              produk: arg["produk"],
+                            ),
+                          );
                         },
                       ),
                     ],

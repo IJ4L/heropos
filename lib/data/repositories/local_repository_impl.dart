@@ -36,8 +36,8 @@ class LocalRepositoryImpl implements LocalRepository {
   }
 
   @override
-  Future<List<TransactionAndDetails>> getAllTransactionsWithDetails() {
-    return localDataSource.getAllTransactionsWithDetails();
+  Future<List<TransactionAndDetails>> getAllTransactionsWithDetails( DateTime startDate) {
+    return localDataSource.getAllTransactionsWithDetails(startDate);
   }
 
   @override
@@ -88,5 +88,40 @@ class LocalRepositoryImpl implements LocalRepository {
   @override
   Future<void> saveBluetoothInfo(BluetoothInfo bluetoothInfo) {
     return localDataSource.saveBluetoothInfo(bluetoothInfo);
+  }
+  
+  @override
+  Future<int> getTotalProduct() {
+    return localDataSource.getTotalProduct();
+  }
+  
+  @override
+  Future<int> getTotalRevenue() {
+    return localDataSource.getTotalRevenue();
+  }
+  
+  @override
+  Future<double> getTotalRevenueToday() {
+    return localDataSource.getTotalRevenueToday();
+  }
+  
+  @override
+  Future<int> getTotalTransaction() {
+    return localDataSource.getTotalTransaction();
+  }
+  
+  @override
+  Future<int> getTotalTransactionToday() {
+    return localDataSource.getTotalTransactionToday();
+  }
+  
+  @override
+  Future<int> getTotalSpending() {
+    return localDataSource.getTotalSpending();
+  }
+  
+  @override
+  Future<double> getTotalSpendingToday() {
+    return localDataSource.getTotalSpendingToday();
   }
 }

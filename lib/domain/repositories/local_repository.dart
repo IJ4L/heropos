@@ -11,7 +11,8 @@ abstract class LocalRepository {
     required TransactionDetail transactionDetail,
   });
   Future<List<TransactionDetail>> getTransactionDetail(int transactionId);
-  Future<List<TransactionAndDetails>> getAllTransactionsWithDetails();
+  Future<List<TransactionAndDetails>> getAllTransactionsWithDetails(
+      DateTime startDate);
 
   Future<int> insertProfile({required Profile profile});
   Future<int> updateProfile({required Profile profile});
@@ -21,6 +22,14 @@ abstract class LocalRepository {
   Future<List<Produk>> getProduk();
   Future<int> updateProduk(Produk produk);
   Future<int> deleteProduk(int id);
+
+  Future<int> getTotalTransaction();
+  Future<int> getTotalTransactionToday();
+  Future<int> getTotalRevenue();
+  Future<double> getTotalRevenueToday();
+  Future<int> getTotalSpending();
+  Future<double> getTotalSpendingToday();
+  Future<int> getTotalProduct();
 
   Future<void> saveBluetoothInfo(BluetoothInfo bluetoothInfo);
   Future<BluetoothInfo> getBluetoothInfo();

@@ -17,7 +17,8 @@ abstract class LocalDataSource {
   Future<List<Transactions>> getTransactions();
   Future<int> insertTransactionDetail(TransactionDetail transactionDetail);
   Future<List<TransactionDetail>> getTransactionDetails(int transactionId);
-  Future<List<TransactionAndDetails>> getAllTransactionsWithDetails();
+  Future<List<TransactionAndDetails>> getAllTransactionsWithDetails(
+      DateTime startDate);
 
   Future<int> insertProfile({required Profile profile});
   Future<int> updateProfile({required Profile profile});
@@ -27,6 +28,14 @@ abstract class LocalDataSource {
   Future<List<Produk>> getProduk();
   Future<int> updateProduk(Produk produk);
   Future<int> deleteProduk(int id);
+
+  Future<int> getTotalTransaction();
+  Future<int> getTotalTransactionToday();
+  Future<int> getTotalRevenue();
+  Future<double> getTotalRevenueToday();
+  Future<int> getTotalSpending();
+  Future<double> getTotalSpendingToday();
+  Future<int> getTotalProduct();
 
   Future<void> saveBluetoothInfo(BluetoothInfo bluetoothInfo);
   Future<BluetoothInfo> getBluetoothInfo();
@@ -62,7 +71,7 @@ class LocalDataSourceImpl implements LocalDataSource {
 
     return await openDatabase(
       path,
-      version: 9,
+      version: 1,
       onCreate: (Database db, int version) async {
         await db.execute(transactions);
         await db.execute(transactionDetails);
@@ -122,23 +131,29 @@ class LocalDataSourceImpl implements LocalDataSource {
   }
 
   @override
-  Future<List<TransactionAndDetails>> getAllTransactionsWithDetails() async {
-    Database? db = await database;
-    List<Map<String, dynamic>> transactionMaps = await db!.query(
+  Future<List<TransactionAndDetails>> getAllTransactionsWithDetails(
+      DateTime startDate) async {
+    final Database? db = await database;
+
+    if (db == null) {
+      return [];
+    }
+
+    final String formattedDate = startDate.toIso8601String().split('T')[0];
+
+    final List<Map<String, dynamic>> transactionMaps = await db.query(
       'transactions',
-      orderBy: 'id',
+      where: 'transactionDate LIKE ?',
+      whereArgs: ['$formattedDate%'],
+      orderBy: 'updated_at',
     );
 
-    return Future.wait(
-      transactionMaps.map(
-        (transactionMap) async {
-          Transactions transaction = Transactions.fromMap(transactionMap);
-          List<TransactionDetail> details = await getTransactionDetails(
-            transaction.id!,
-          );
-          return TransactionAndDetails(transaction, details);
-        },
-      ),
+    return await Future.wait(
+      transactionMaps.map((transactionMap) async {
+        final transaction = Transactions.fromMap(transactionMap);
+        final details = await getTransactionDetails(transaction.id!);
+        return TransactionAndDetails(transaction, details);
+      }).toList(),
     );
   }
 
@@ -236,5 +251,104 @@ class LocalDataSourceImpl implements LocalDataSource {
     await sharedPreferences!.setString('tag', bluetoothInfo.name);
     await sharedPreferences!.setString('address', bluetoothInfo.macAdress);
     return;
+  }
+
+  @override
+  Future<int> getTotalProduct() async {
+    Database? db = await database;
+    return await db!.rawQuery('SELECT COUNT(*) FROM products').then(
+      (value) {
+        return Sqflite.firstIntValue(value) ?? 0;
+      },
+    );
+  }
+
+  @override
+  Future<int> getTotalRevenue() async {
+    Database? db = await database;
+    return await db!.rawQuery('SELECT SUM(totalAmount) FROM transactions').then(
+      (value) {
+        return Sqflite.firstIntValue(value) ?? 0;
+      },
+    );
+  }
+
+  @override
+  Future<double> getTotalRevenueToday() async {
+    final Database? db = await database;
+
+    if (db == null) {
+      return 0.0;
+    }
+
+    final String todayDate = DateTime.now().toIso8601String().split('T')[0];
+
+    final List<Map<String, dynamic>> result = await db.rawQuery(
+      'SELECT SUM(totalAmount) AS total FROM transactions WHERE transactionDate LIKE ?',
+      ['$todayDate%'],
+    );
+
+    return result.isNotEmpty && result.first['total'] != null
+        ? (result.first['total'] as num).toDouble()
+        : 0.0;
+  }
+
+  @override
+  Future<int> getTotalTransaction() async {
+    Database? db = await database;
+    return await db!.rawQuery('SELECT COUNT(*) FROM transactions').then(
+      (value) {
+        return Sqflite.firstIntValue(value) ?? 0;
+      },
+    );
+  }
+
+  @override
+  Future<int> getTotalTransactionToday() async {
+    final Database? db = await database;
+
+    if (db == null) {
+      return 0;
+    }
+
+    final String todayDate = DateTime.now().toIso8601String().split('T')[0];
+
+    final List<Map<String, dynamic>> result = await db.rawQuery(
+      'SELECT COUNT(*) AS count FROM transactions WHERE transactionDate LIKE ?',
+      ['$todayDate%'],
+    );
+
+    return result.isNotEmpty ? (result.first['count'] as int?) ?? 0 : 0;
+  }
+
+  @override
+  Future<int> getTotalSpending() async {
+    Database? db = await database;
+    return await db!.rawQuery('SELECT SUM(totalAmount) FROM transactions').then(
+      (value) {
+        return Sqflite.firstIntValue(value) ?? 0;
+      },
+    );
+  }
+
+  @override
+  Future<double> getTotalSpendingToday() async {
+    final Database? db = await database;
+
+    if (db == null) {
+      return 0.0;
+    }
+
+    final String todayDate = DateTime.now().toIso8601String().split('T')[0];
+
+    final List<Map<String, dynamic>> result = await db.rawQuery(
+      'SELECT SUM(Harga_Beli) AS total FROM products WHERE created_at LIKE ?',
+      ['$todayDate%'],
+    );
+
+    // Safely parse the result as a double
+    return result.isNotEmpty && result.first['total'] != null
+        ? (result.first['total'] as num).toDouble()
+        : 0.0;
   }
 }

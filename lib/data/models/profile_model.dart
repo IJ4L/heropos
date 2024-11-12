@@ -1,5 +1,5 @@
 class Profile {
-  int? id;
+  int id;
   String name;
   String alamat;
   String email;
@@ -7,7 +7,7 @@ class Profile {
   String img;
 
   Profile({
-    this.id,
+    required this.id,
     required this.name,
     required this.alamat,
     required this.email,
@@ -28,7 +28,7 @@ class Profile {
 
   factory Profile.fromMap(Map<String, dynamic> map) {
     return Profile(
-      id: map['id'],
+      id: map['id'] ?? 0,
       name: map['name'],
       alamat: map['alamat'],
       email: map['email'],

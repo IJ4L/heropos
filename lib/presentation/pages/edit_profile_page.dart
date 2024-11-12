@@ -7,6 +7,7 @@ import 'package:mb_hero_post/core/themes/app_font.dart';
 import 'package:mb_hero_post/data/models/profile_model.dart';
 import 'package:mb_hero_post/presentation/cubit/camera_cubit/camere_cubit.dart';
 import 'package:mb_hero_post/presentation/cubit/profile_cubit/profile_cubit.dart';
+import 'package:mb_hero_post/presentation/utils/snack_bar.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({Key? key, required this.profile}) : super(key: key);
@@ -187,16 +188,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           : context.read<CamereCubit>().state,
                     );
                     context.read<ProfileCubit>().updateProfileData(profileData);
-
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        backgroundColor: AppColor.green,
-                        content: Text(
-                          "Berhasil menyimpan perubahan",
-                          style: AppFont.popSemiBold.s14,
-                        ),
-                      ),
+                    showCustomSnackBar(
+                      context,
+                      "Berhasil menyimpan perubahan",
+                      AppColor.green,
+                      Icons.check_circle,
                     );
+                    Navigator.pop(context);
                   }
                 },
                 style: ElevatedButton.styleFrom(

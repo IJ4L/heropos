@@ -19,12 +19,16 @@ Container costumeIconButton({
     child: IconButton(
       onPressed: onPressed,
       style: IconButton.styleFrom(
+        backgroundColor: AppColor.green,
         padding: EdgeInsets.all(8.r),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(0),
         ),
       ),
-      icon: Icon(iconData),
+      icon: Icon(
+        iconData,
+        color: AppColor.white,
+      ),
     ),
   );
 }

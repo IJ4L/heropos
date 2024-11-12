@@ -9,6 +9,7 @@ import 'package:mb_hero_post/core/themes/app_color.dart';
 import 'package:mb_hero_post/core/themes/app_font.dart';
 import 'package:mb_hero_post/data/models/transaction_detail_model.dart';
 import 'package:mb_hero_post/data/models/transaction_model.dart';
+import 'package:mb_hero_post/presentation/cubit/data_home_cubit/data_home_cubit.dart';
 import 'package:mb_hero_post/presentation/utils/random.dart';
 
 class PaymentPage extends StatelessWidget {
@@ -33,7 +34,7 @@ class PaymentPage extends StatelessWidget {
       body: PopScope(
         onPopInvoked: (didPop) {
           context.read<PembayaranCubit>().deleteAll();
-          context.pushNamed(AppRoute.troli.path);
+          context.pushNamed(AppRoute.chasier.path);
         },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -242,6 +243,7 @@ class PaymentPage extends StatelessWidget {
                                   transactionCubit,
                                   pembayaranCubit,
                                 );
+                                context.read<DataHomeCubit>().getDataHome();
                                 context.pushNamed(
                                   AppRoute.paymentsuccess.path,
                                   extra: {

@@ -11,4 +11,5 @@ class AppColor {
   static const blue = Color(0xFF6488ea);
   static const transparent = Color(0x00000000);
   static const background = Color(0xFFF4F7FE);
+  static const blackSmooth = Color(0xFF374856);
 }

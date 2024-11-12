@@ -14,10 +14,7 @@ import 'package:mb_hero_post/presentation/widgets/floating_price.dart';
 class TroliPage extends StatelessWidget {
   const TroliPage({
     super.key,
-    required this.itemChoose,
   });
-
-  final TroliState itemChoose;
 
   @override
   Widget build(BuildContext context) {
@@ -32,13 +29,13 @@ class TroliPage extends StatelessWidget {
         centerTitle: true,
         backgroundColor: AppColor.white,
       ),
-      body: ListView.separated(
-        shrinkWrap: false,
-        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
-        itemBuilder: (contex, index) {
-          var product = itemChoose.products[index];
-          return BlocBuilder<TroliCubit, TroliState>(
-            builder: (context, state) {
+      body: BlocBuilder<TroliCubit, TroliState>(
+        builder: (context, state) {
+          return ListView.separated(
+            shrinkWrap: false,
+            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+            itemBuilder: (contex, index) {
+              var product = state.products[index];
               return Container(
                 height: 65.h,
                 width: double.infinity,
@@ -49,17 +46,30 @@ class TroliPage extends StatelessWidget {
                 child: Row(
                   children: [
                     ClipRRect(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(6.r),
-                        bottomLeft: Radius.circular(6.r),
-                      ),
-                      child: Image.file(
-                        File(itemChoose.products[index].imgOfProduct),
-                        width: 120.0,
-                        height: 120.0,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(6.r),
+                          bottomLeft: Radius.circular(6.r),
+                        ),
+                        child: product.imgOfProduct.isNotEmpty
+                            ? Image.file(
+                                File(product.imgOfProduct.toString()),
+                                width: 120.0,
+                                height: 120.0,
+                                fit: BoxFit.cover,
+                              )
+                            : Image.asset(
+                                "assets/images/img_product_bg.png",
+                                width: 120.0,
+                                height: 120.0,
+                                fit: BoxFit.cover,
+                              )
+                        // Image.file(
+                        //   File(itemChoose.products[index].imgOfProduct),
+                        //   width: 120.0,
+                        //   height: 120.0,
+                        //   fit: BoxFit.cover,
+                        // ),
+                        ),
                     SizedBox(width: 12.h),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -74,7 +84,7 @@ class TroliPage extends StatelessWidget {
                           style: AppFont.regular.s12,
                         ),
                         Text(
-                          "Qty: ${state.products[index].quantity}",
+                          "Qty: ${product.quantity}",
                           style: AppFont.regular.s12,
                         )
                       ],
@@ -113,11 +123,11 @@ class TroliPage extends StatelessWidget {
                 ),
               );
             },
+            separatorBuilder: (context, index) => SizedBox(height: 12.h),
+            scrollDirection: Axis.vertical,
+            itemCount: state.products.length,
           );
         },
-        separatorBuilder: (context, index) => SizedBox(height: 12.h),
-        scrollDirection: Axis.vertical,
-        itemCount: itemChoose.products.length,
       ),
       floatingActionButton: BlocBuilder<TroliCubit, TroliState>(
         builder: (context, state) => state.products.isEmpty

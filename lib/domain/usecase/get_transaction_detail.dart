@@ -6,7 +6,10 @@ class GetTransactionDetailUseCase {
 
   GetTransactionDetailUseCase({required this.localRepository});
 
-  Future<List<TransactionAndDetails>> execute() async {
-    return await localRepository.getAllTransactionsWithDetails();
+  Future<List<TransactionAndDetails>> execute(
+      DateTime startDate) async {
+    return await localRepository.getAllTransactionsWithDetails(
+      startDate,
+    );
   }
 }

@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mb_hero_post/config/injector/injector.dart';
 import 'package:mb_hero_post/core/themes/app_color.dart';
 import 'package:mb_hero_post/presentation/cubit/bluetooth_info_cubit/bluetooth_info_cubit.dart';
+import 'package:mb_hero_post/presentation/cubit/calender_cubit.dart';
 import 'package:mb_hero_post/presentation/cubit/produk_cubit/produk_cubit.dart';
 import 'package:mb_hero_post/presentation/cubit/profile_cubit/profile_cubit.dart';
 import 'package:svg_flutter/svg_flutter.dart';
@@ -36,6 +37,9 @@ class _HomepageState extends State<Homepage> {
   @override
   Widget build(BuildContext context) {
     final int seleceted = widget.navigationShell.currentIndex;
+    DateTime today = DateTime.now();
+    DateTime yesterday = today.subtract(const Duration(days: 7));
+    debugPrint("today: $yesterday");
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: widget.navigationShell,
@@ -69,7 +73,8 @@ class _HomepageState extends State<Homepage> {
           NavigationDestinantionCostume(
             seleceted: seleceted,
             onPressed: () => {
-              context.read<TransactionCubit>().getTransactionDetails(),
+              context.read<TransactionCubit>().getTransactionDetails(yesterday),
+              context.read<SelectRangeDateCubit>().selectRange(DateTime.now()),
               _goBranch(2),
             },
             icon: "ic_card",

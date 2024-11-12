@@ -3,14 +3,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mb_hero_post/core/routes/app_route_path.dart';
 import 'package:mb_hero_post/core/themes/app_color.dart';
 import 'package:mb_hero_post/core/themes/app_font.dart';
 import 'package:mb_hero_post/data/models/product_insert_model.dart';
 import 'package:mb_hero_post/presentation/cubit/camera_cubit/camere_cubit.dart';
 import 'package:mb_hero_post/presentation/cubit/produk_cubit/produk_cubit.dart';
+import 'package:mb_hero_post/presentation/utils/bottom_sheet.dart';
+import 'package:mb_hero_post/presentation/utils/snack_bar.dart';
 
 class AddProdukPage extends StatefulWidget {
-  const AddProdukPage({Key? key}) : super(key: key);
+  final bool isEdit;
+  final Produk produk;
+  const AddProdukPage({
+    Key? key,
+    required this.isEdit,
+    required this.produk,
+  }) : super(key: key);
 
   @override
   State<AddProdukPage> createState() => _AddProdukPageState();
@@ -30,6 +39,19 @@ class _AddProdukPageState extends State<AddProdukPage> {
   final GlobalKey<FormState> hargaJualFormKey = GlobalKey<FormState>();
 
   @override
+  void initState() {
+    if (widget.isEdit) {
+      namaBarangController.text = widget.produk.namaProduk;
+      kodeBarangController.text = widget.produk.kodeProduk;
+      stokController.text = widget.produk.stok.toString();
+      hargaBeliController.text = widget.produk.hargaBeli.toString();
+      hargaJualController.text = widget.produk.hargaJual.toString();
+      context.read<CamereCubit>().setImage(widget.produk.gambarProduk!);
+    }
+    super.initState();
+  }
+
+  @override
   void dispose() {
     super.dispose();
     namaBarangController.dispose();
@@ -41,15 +63,107 @@ class _AddProdukPageState extends State<AddProdukPage> {
 
   @override
   Widget build(BuildContext context) {
+    final produkCubit = context.read<ProdukCubit>();
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(
-          "Tambah Produk",
+          widget.isEdit ? "Edit Produk" : "Tambah Produk",
           style: AppFont.semiBold.s16,
         ),
         centerTitle: true,
         backgroundColor: AppColor.white,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: IconButton(
+              onPressed: () {
+                showBottomSheetUtil(
+                  context,
+                  SizedBox(
+                    height: 45.h,
+                    width: double.infinity,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          height: 3,
+                          width: 60,
+                          decoration: BoxDecoration(
+                            color: AppColor.blackSmooth.withOpacity(0.05),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              "Hapus Produk?",
+                              style: AppFont.semiBold.s12.copyWith(
+                                color: AppColor.black,
+                              ),
+                            ),
+                            const Spacer(),
+                            SizedBox(
+                              width: 100,
+                              child: TextButton(
+                                onPressed: () {
+                                  produkCubit.deleteProduk(widget.produk.id!);
+                                  context.read<ProdukCubit>().getProduks();
+                                  context.goNamed(AppRoute.produk.name);
+                                  showCustomSnackBar(
+                                    context,
+                                    "Berhasil menghapus produk",
+                                    AppColor.red,
+                                    Icons.close,
+                                  );
+                                },
+                                style: TextButton.styleFrom(
+                                  backgroundColor: AppColor.red,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                                child: Text(
+                                  "Hapus",
+                                  style: AppFont.semiBold.s12.copyWith(
+                                    color: AppColor.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 5.w),
+                            SizedBox(
+                              width: 100,
+                              child: TextButton(
+                                onPressed: () {
+                                  context.pop();
+                                },
+                                style: TextButton.styleFrom(
+                                  backgroundColor: AppColor.white,
+                                  side: const BorderSide(
+                                    color: AppColor.green,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                                child: const Text("Batal"),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+              icon: const Icon(
+                Icons.delete_sweep_outlined,
+                color: AppColor.red,
+              ),
+            ),
+          ),
+        ],
       ),
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
@@ -81,7 +195,13 @@ class _AddProdukPageState extends State<AddProdukPage> {
                           ),
                         );
                       }
-                      return Container();
+                      return ClipRRect(
+                        borderRadius: BorderRadius.circular(60.h),
+                        child: Image.asset(
+                          "assets/images/img_product_bg.png",
+                          fit: BoxFit.fill,
+                        ),
+                      );
                     },
                   ),
                 ),
@@ -95,6 +215,10 @@ class _AddProdukPageState extends State<AddProdukPage> {
                     style: IconButton.styleFrom(
                       backgroundColor: AppColor.green,
                       shape: const CircleBorder(),
+                      side: const BorderSide(
+                        color: AppColor.white,
+                        width: 2,
+                      ),
                     ),
                     icon: Center(
                       child: Icon(
@@ -168,7 +292,25 @@ class _AddProdukPageState extends State<AddProdukPage> {
                       tanggalKadaluarsa: DateTime.now(),
                       hargaGrosir: 232,
                     );
-                    context.read<ProdukCubit>().addProduk(newProduk);
+                    if (widget.isEdit) {
+                      newProduk.id = widget.produk.id;
+                      produkCubit.updateProduks(newProduk);
+                      showCustomSnackBar(
+                        context,
+                        "Berhasil mengubah produk",
+                        AppColor.blue,
+                        Icons.check_circle,
+                      );
+                    } else {
+                      produkCubit.addProduk(newProduk);
+                      showCustomSnackBar(
+                        context,
+                        "Berhasil menyimpan produk",
+                        AppColor.green,
+                        Icons.check_circle,
+                      );
+                    }
+                    produkCubit.getProduks();
                     context.pop();
                   }
                 },

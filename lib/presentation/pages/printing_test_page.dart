@@ -122,15 +122,12 @@ class _PrintingTestPageState extends State<PrintingTestPage> {
                       );
                     }
                     if (state is PrinterSuccess) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           backgroundColor: AppColor.green,
                           content: Text(
                             "Berhasil mencetak struk",
                             style: AppFont.popSemiBold.s14,
-                          )
-                        )
-                      );
+                          )));
                     }
                   },
                   builder: (BuildContext context, PrinterState state) {
@@ -150,6 +147,7 @@ class _PrintingTestPageState extends State<PrintingTestPage> {
                                     5000,
                                   ),
                                   profile: Profile(
+                                    id: 1,
                                     name: "Hero",
                                     alamat: "Jl. Jendral Sudirman",
                                     email: "l3KpY@example.com",

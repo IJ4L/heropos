@@ -29,9 +29,9 @@ class TransactionCubit extends Cubit<TransactionState> {
     insertTransactionDetail.execute(transactionDetail: transactionDetail);
   }
 
-  void getTransactionDetails() async {
+  void getTransactionDetails(DateTime startDate) async {
     emit(TransactionLoading());
-    final result = await getTransactionDetail.execute();
+    final result = await getTransactionDetail.execute(startDate);
     emit(TransactionSuccess(result));
   }
 }

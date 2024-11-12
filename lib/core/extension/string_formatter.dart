@@ -12,3 +12,13 @@ extension CurrencyFormatting on String {
     }
   }
 }
+
+extension DateTimeRangeFormatter on String {
+  String toDateOnlyRange() {
+    final parts = split(" - ");
+
+    final tanggalMulai = parts[0].split(" ")[0];
+
+    return tanggalMulai;
+  }
+}

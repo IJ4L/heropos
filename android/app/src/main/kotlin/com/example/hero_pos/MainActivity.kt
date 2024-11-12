@@ -1,4 +1,4 @@
-package com.example.hero_pos
+package com.uinam.hero_pos
 
 import io.flutter.embedding.android.FlutterActivity
 

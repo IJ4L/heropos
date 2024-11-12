@@ -4,6 +4,8 @@ String transactions = '''
             transactionDate TEXT,
             totalAmount REAL,
             tunai INTEGER
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
           )
         ''';
 
@@ -14,6 +16,8 @@ String transactionDetails = '''
             itemName TEXT,
             quantity INTEGER,
             unitPrice REAL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (transactionId) REFERENCES transactions (id)
           )
         ''';
@@ -45,6 +49,8 @@ String products = '''
     Stok INTEGER NOT NULL,
     KategoriProduk TEXT,
     GambarProduk TEXT,
-    TanggalKadaluarsa DATE
+    TanggalKadaluarsa DATE,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
   );
 ''';

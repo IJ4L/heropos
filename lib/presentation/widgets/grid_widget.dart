@@ -23,7 +23,7 @@ class GridCard extends StatelessWidget {
     final TroliCubit troliCubit = context.read<TroliCubit>();
 
     return GridView.builder(
-      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+      padding: EdgeInsets.all(15.r),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         childAspectRatio: 0.9,
         crossAxisCount: 2,
@@ -39,11 +39,13 @@ class GridCard extends StatelessWidget {
             var products = this.products[index];
             String amountString = products.hargaJual.toInt().toString();
             String formattedAmount = amountString.formatCurrency();
-            var qty = state.products.contains(ProductModel(
-              nameOfProduct: products.namaProduk,
-              priceOfProduct: products.hargaJual.toInt().toString(),
-              imgOfProduct: products.gambarProduk.toString(),
-            ))
+            var qty = state.products.contains(
+              ProductModel(
+                nameOfProduct: products.namaProduk,
+                priceOfProduct: products.hargaJual.toInt().toString(),
+                imgOfProduct: products.gambarProduk.toString(),
+              ),
+            )
                 ? state
                     .products[state.products.indexWhere((element) =>
                         element ==
@@ -95,12 +97,19 @@ class GridCard extends StatelessWidget {
                             topLeft: Radius.circular(10.r),
                             topRight: Radius.circular(10.r),
                           ),
-                          child: Image.file(
-                            File(products.gambarProduk.toString()),
-                            width: double.infinity,
-                            height: 100.h,
-                            fit: BoxFit.cover,
-                          ),
+                          child: products.gambarProduk!.isNotEmpty
+                              ? Image.file(
+                                  File(products.gambarProduk.toString()),
+                                  width: double.infinity,
+                                  height: 100.h,
+                                  fit: BoxFit.cover,
+                                )
+                              : Image.asset(
+                                  "assets/images/img_product_bg.png",
+                                  width: double.infinity,
+                                  height: 100.h,
+                                  fit: BoxFit.cover,
+                                ),
                         ),
                         SizedBox(height: 10.h),
                         Padding(

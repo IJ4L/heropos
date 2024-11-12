@@ -34,7 +34,7 @@ class PaymentSuccessPage extends StatelessWidget {
         onPopInvoked: (didPop) {
           context.read<TroliCubit>().reset();
           context.read<PembayaranCubit>().deleteAll();
-          context.go(AppRoute.chasier.path);
+          context.pushReplacementNamed(AppRoute.chasier.path);
         },
         child: SafeArea(
           child: Column(
@@ -203,7 +203,7 @@ class PaymentSuccessPage extends StatelessWidget {
                   onPressed: () {
                     context.read<TroliCubit>().reset();
                     context.read<PembayaranCubit>().deleteAll();
-                    context.go(AppRoute.chasier.path);
+                    context.pushReplacementNamed(AppRoute.chasier.path);
                   },
                   style: TextButton.styleFrom(
                     padding: EdgeInsets.symmetric(vertical: 14.h),

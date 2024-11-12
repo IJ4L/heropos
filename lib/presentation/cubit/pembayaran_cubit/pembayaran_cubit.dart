@@ -4,13 +4,10 @@ class PembayaranCubit extends Cubit<String> {
   PembayaranCubit() : super("0");
 
   void addPrice(String angka) {
-    // Mengambil nilai terkini dari state
     String currentValue = state;
 
-    // Menggabungkan nilai terkini dengan angka yang diberikan
     String newValue = currentValue + angka;
 
-    // Mengemisikan nilai baru ke dalam state
     emit(newValue);
   }
 

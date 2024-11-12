@@ -23,7 +23,7 @@ class ListCardWidget extends StatelessWidget {
     final TroliCubit troliCubit = context.read<TroliCubit>();
 
     return ListView.separated(
-      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+      padding: EdgeInsets.all(15.r),
       itemBuilder: (context, index) {
         final products = this.products[index];
         String amountString = products.hargaJual.toInt().toString();
@@ -70,17 +70,23 @@ class ListCardWidget extends StatelessWidget {
                   child: Row(
                     children: [
                       ClipRRect(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(9.r),
-                          bottomLeft: Radius.circular(8.r),
-                        ),
-                        child: Image.file(
-                          File(products.gambarProduk.toString()),
-                          width: 120.0,
-                          height: 120.0,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(9.r),
+                            bottomLeft: Radius.circular(8.r),
+                          ),
+                          child: products.gambarProduk!.isNotEmpty
+                              ? Image.file(
+                                  File(products.gambarProduk.toString()),
+                                  width: 120.0,
+                                  height: 120.0,
+                                  fit: BoxFit.cover,
+                                )
+                              : Image.asset(
+                                  "assets/images/img_product_bg.png",
+                                  width: 120.0,
+                                  height: 120.0,
+                                  fit: BoxFit.cover,
+                                )),
                       SizedBox(width: 15.w),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,

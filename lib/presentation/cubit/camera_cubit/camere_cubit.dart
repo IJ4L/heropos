@@ -11,6 +11,10 @@ class CamereCubit extends Cubit<String> {
     emit(image);
   }
 
+  void setImage(String image) {
+    emit(image);
+  }
+
   void reset() {
     emit("");
   }

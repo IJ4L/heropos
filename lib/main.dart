@@ -8,7 +8,9 @@ import 'package:mb_hero_post/core/routes/app_route_conf.dart';
 import 'package:mb_hero_post/data/data_sources/local_data_source.dart';
 import 'package:mb_hero_post/presentation/cubit/bluetooth_info_cubit/bluetooth_info_cubit.dart';
 import 'package:mb_hero_post/presentation/cubit/bluetooth_status_cubit/bluetooth_status_cubit.dart';
+import 'package:mb_hero_post/presentation/cubit/calender_cubit.dart';
 import 'package:mb_hero_post/presentation/cubit/camera_cubit/camere_cubit.dart';
+import 'package:mb_hero_post/presentation/cubit/data_home_cubit/data_home_cubit.dart';
 import 'package:mb_hero_post/presentation/cubit/list_card_cubit/list_card_cubit.dart';
 import 'package:mb_hero_post/presentation/cubit/pembayaran_cubit/pembayaran_cubit.dart';
 import 'package:mb_hero_post/presentation/cubit/printer_cubit/printer_cubit.dart';
@@ -53,6 +55,9 @@ class MyApp extends StatelessWidget {
             BlocProvider(create: (_) => di.getIt<BluetoothStatusCubit>()),
             BlocProvider(create: (_) => di.getIt<ProdukCubit>()),
             BlocProvider(create: (_) => di.getIt<BluetoothInfoCubit>()),
+            BlocProvider(create: (_) => CalenderCubit()),
+            BlocProvider(create: (_) => SelectRangeDateCubit()),
+            BlocProvider(create: (_) => di.getIt<DataHomeCubit>()),
           ],
           child: MaterialApp.router(
             routerConfig: router,
